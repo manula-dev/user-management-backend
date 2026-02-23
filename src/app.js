@@ -1,7 +1,18 @@
 import http from "http";
 import { handleUserByIdRoute, userRoutes } from "./routes/user.routes.js";
+import { authRoutes } from "./routes/auth.routes.js";
+import { authenticate } from "./middleware/auth.js";
 
+function withAuth(handler) {
+  return (req, res) => authenticate(req, res, () => handler(req, res));
+}
 export function createServer() {
+
+  // Wrap user routes with authentication
+const protectedUserRoutes = {};
+for (const path in userRoutes) {
+  protectedUserRoutes[path] = withAuth(userRoutes[path]);
+}
   const routes = {
     "/": (req, res) => {
       res.writeHead(200, { "content-type": "text/plain" });
@@ -15,7 +26,8 @@ export function createServer() {
       res.writeHead(200, { "Content-Type": "text/plain" });
       res.end("About Page");
     },
-    ...userRoutes,
+    ...protectedUserRoutes,
+    ...authRoutes,
   };
 
   const server = http.createServer((req, res) => {
@@ -23,7 +35,7 @@ export function createServer() {
     const path = rawPath !== "/" ? rawPath.replace(/\/+$/, "") : rawPath;
 
     if (path.startsWith("/users/") && path.split("/").length === 3) {
-      return handleUserByIdRoute(req, res);
+      return withAuth(handleUserByIdRoute)(req, res);
     }
 
     const handler = routes[path];
