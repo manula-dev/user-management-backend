@@ -12,6 +12,13 @@ server.listen(PORT, () => {
     //console.log("Server started successfully!");
 
   // Additional server setup or middleware can go here */
+  process.on("unhandledRejection", err => {
+  console.error("UNHANDLED REJECTION:", err);
+});
+
+process.on("uncaughtException", err => {
+  console.error("UNCAUGHT EXCEPTION:", err);
+});
 import "dotenv/config";
 import { createServer } from "./app.js";
 
