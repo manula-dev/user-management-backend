@@ -1,5 +1,5 @@
 import { handleCreateUser } from "../controllers/user.controller.js"; // use exact export name
-import { handleLogin } from "../controllers/auth.controller.js";
+import { handleLogin, handleSignup } from "../controllers/auth.controller.js";
 
 export const authRoutes = {
   "/register": (req, res) => {
@@ -13,4 +13,11 @@ export const authRoutes = {
     res.writeHead(405, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ error: "Method Not Allowed" }));
   },
+
+  "/auth/signup": (req, res) => {
+    if (req.method === "POST") return handleSignup(req, res);
+    res.writeHead(405, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Method Not Allowed" }));
+  },
+
 };

@@ -17,8 +17,8 @@ export function authenticate(req, res, handler) {
     req.user = payload;
 
     // 🔹 Super clean console output for easy copy
-    console.log(token); // just the token string
-    console.log("User ID:", payload.userId);
+    //console.log(token); // just the token string
+    //console.log("User ID:", payload.userId);
 
     return handler(req, res);
   } catch (err) {

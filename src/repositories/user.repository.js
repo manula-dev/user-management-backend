@@ -6,6 +6,7 @@ export const userRepository = {
       id: true,
       name: true,
       email: true,
+      role: true,
     },
   }),
   findById: (id) =>  prisma.user.findUnique({
@@ -14,6 +15,7 @@ export const userRepository = {
       id: true,
       name: true,
       email: true,
+      role: true,
   }  }),
   findByEmail: (email) => prisma.user.findUnique({
     where: { email },
@@ -25,6 +27,7 @@ export const userRepository = {
       id: true,
       name: true,
       email: true,
+      role: true,
     },
     });
   },
@@ -41,6 +44,7 @@ export const userRepository = {
       id: true,
       name: true,
       email: true,
+      role: true,
     },
     });
   },

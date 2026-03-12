@@ -25,6 +25,10 @@ export function handleLogin(req, res) {
  import { authService } from "../services/auth.service.js";
 import { signupSchema, loginSchema } from "../schemas/auth.schemas.js";
 
+function getValidationMessage(error) {
+  return error?.issues?.[0]?.message || "Invalid request body";
+}
+
 // ✅ LOGIN (updated with validation)
 
 export function handleLogin(req, res) {
@@ -51,7 +55,7 @@ export function handleLogin(req, res) {
         res.writeHead(400, { "Content-Type": "application/json" });
         return res.end(
           JSON.stringify({
-            error: result.error.errors[0].message,
+            error: getValidationMessage(result.error),
           })
         );
       }
@@ -66,8 +70,15 @@ export function handleLogin(req, res) {
     } catch (err) {
       console.error("Login error:", err);
 
-      res.writeHead(401, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: err.message }));
+      if (res.headersSent) return;
+
+      if (err?.message === "Invalid credentials") {
+        res.writeHead(401, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({ error: err.message }));
+      }
+
+      res.writeHead(500, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ error: "Internal server error" }));
     }
   });
 }
@@ -102,20 +113,27 @@ export function handleSignup(req, res) {
         res.writeHead(400, { "Content-Type": "application/json" });
         return res.end(
           JSON.stringify({
-            error: result.error.errors[0].message,
+            error: getValidationMessage(result.error),
           })
         );
       }
 
-      const user = await signupUser(result.data);
+      const user = await authService.signup(result.data);
 
       res.writeHead(201, { "Content-Type": "application/json" });
       res.end(JSON.stringify(user));
     } catch (err) {
+      if (err?.code === "P2002") {
+        res.writeHead(409, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({ error: "Email already exists" }));
+      }
+
       console.error("Signup error:", err);
 
+      if (res.headersSent) return;
+
       res.writeHead(500, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Internal server error" }));
+      return res.end(JSON.stringify({ error: "Internal server error" }));
     }
   });
 }

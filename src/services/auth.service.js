@@ -27,7 +27,12 @@ export const authService = {
       role,
     });
 
-    return user;
+    return  {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+};
   },
 
   // ✅ LOGIN (FIXED)
@@ -55,6 +60,6 @@ export const authService = {
       { expiresIn: "1h" }
     );
 
-    return { token };
+    return { token, role: user.role };
   },
 };

@@ -23,6 +23,9 @@ import "dotenv/config";
 import { createServer } from "./app.js";
 
 const server = createServer();
+ 
+
+ 
 const PORT = process.env.PORT || 4000;
 
 server.listen(PORT, () => {
