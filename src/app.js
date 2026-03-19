@@ -7,12 +7,12 @@ function withAuth(handler) {
   return (req, res) => authenticate(req, res, () => handler(req, res));
 }
 export function createServer() {
-
   // Wrap user routes with authentication
-const protectedUserRoutes = {};
-for (const path in userRoutes) {
-  protectedUserRoutes[path] = withAuth(userRoutes[path]);
-}
+  const protectedUserRoutes = {};
+  for (const path in userRoutes) {
+    protectedUserRoutes[path] = withAuth(userRoutes[path]);
+  }
+
   const routes = {
     "/": (req, res) => {
       res.writeHead(200, { "content-type": "text/plain" });
@@ -34,15 +34,15 @@ for (const path in userRoutes) {
     const rawPath = req.url.split("?")[0];
     const path = rawPath !== "/" ? rawPath.replace(/\/+$/, "") : rawPath;
 
-    if (path.startsWith("/users/") && path.split("/").length === 3) {
-      return withAuth(handleUserByIdRoute)(req, res);
-    }
-
     const handler = routes[path];
 
     if (handler) {
       handler(req, res);
       return;
+    }
+
+    if (path.startsWith("/users/") && path.split("/").length === 3) {
+      return withAuth(handleUserByIdRoute)(req, res);
     }
 
     res.writeHead(404, { "Content-Type": "application/json" });

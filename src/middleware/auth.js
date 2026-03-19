@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const SECRET_KEY = process.env.JWT_SECRET || "mysecret";
+const SECRET_KEY = process.env.JWT_SECRET || "supersecret";
 
 export function authenticate(req, res, handler) {
   const authHeader = req.headers["authorization"];

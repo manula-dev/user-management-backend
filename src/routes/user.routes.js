@@ -1,15 +1,13 @@
 import {
   handleCreateUser,
   handleDeleteUser,
+  handleGetMe,
   handleGetUserById,
   handleGetUsers,
   handleUpdateUser,
 } from "../controllers/user.controller.js";
-import { authenticate } from "../middleware/auth.js";
-  
 
 export const userRoutes = {
-
   "/users": (req, res) => {
     if (req.method === "GET") {
       return handleGetUsers(req, res);
@@ -23,17 +21,18 @@ export const userRoutes = {
     res.end(JSON.stringify({ error: "Method Not Allowed" }));
   },
   "/users/me": (req, res) => {
-  if (req.method === "GET") {
-    return authenticate(req, res, handleGetMe);
-  }
-  res.writeHead(405, { "Content-Type": "application/json" });
-  res.end(JSON.stringify({ error: "Method Not Allowed" }));
+    if (req.method === "GET") {
+      return handleGetMe(req, res);
+    }
+
+    res.writeHead(405, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Method Not Allowed" }));
   },
 };
 
 export function handleUserByIdRoute(req, res) {
   const parts = req.url.split("/").filter(Boolean); // removes empty strings
- const id = Number(parts[1]); // 0 = "users", 1 = ID
+  const id = Number(parts[1]); // 0 = "users", 1 = ID
 
   if (!Number.isInteger(id) || id <= 0) {
     res.writeHead(400, { "Content-Type": "application/json" });
