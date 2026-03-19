@@ -5,8 +5,11 @@ import {
   handleGetUsers,
   handleUpdateUser,
 } from "../controllers/user.controller.js";
+import { authenticate } from "../middleware/auth.js";
+  
 
 export const userRoutes = {
+
   "/users": (req, res) => {
     if (req.method === "GET") {
       return handleGetUsers(req, res);
@@ -18,6 +21,13 @@ export const userRoutes = {
 
     res.writeHead(405, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ error: "Method Not Allowed" }));
+  },
+  "/users/me": (req, res) => {
+  if (req.method === "GET") {
+    return authenticate(req, res, handleGetMe);
+  }
+  res.writeHead(405, { "Content-Type": "application/json" });
+  res.end(JSON.stringify({ error: "Method Not Allowed" }));
   },
 };
 
