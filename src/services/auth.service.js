@@ -27,11 +27,22 @@ export const authService = {
       role,
     });
 
+    const token = jwt.sign(
+    {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+    },
+    JWT_SECRET,
+    { expiresIn: "1h" }
+  );
+
     return  {
       id: user.id,
       name: user.name,
       email: user.email,
-      role: user.role
+      role: user.role,
+      token 
 };
   },
 
