@@ -3,7 +3,7 @@ import { handleLogin, handleSignup } from "../controllers/auth.controller.js";
 
 export const authRoutes = {
   "/register": (req, res) => {
-    if (req.method === "POST") return handleCreateUser(req, res);
+    if (req.method === "POST") return handleSignup(req, res);
     res.writeHead(405, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ error: "Method Not Allowed" }));
   },
