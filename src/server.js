@@ -12,6 +12,7 @@ server.listen(PORT, () => {
     //console.log("Server started successfully!");
 
   // Additional server setup or middleware can go here */
+ /* 
   process.on("unhandledRejection", err => {
   console.error("UNHANDLED REJECTION:", err);
 });
@@ -31,4 +32,11 @@ const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   console.log("Server started successfully!");
+});
+*/
+import app from "./app.js";
+
+app.listen(3000, () => {
+  console.log("Server is running on http://localhost:3000");
+
 });
