@@ -58,7 +58,7 @@ export function createServer() {
 
 import express from "express";
 import { authRouter} from "./routes/auth.routes.js";
-import { userRoutes } from "./routes/user.routes.js";
+import { userRouter } from "./routes/user.routes.js";
 import { authenticate } from "./middleware/auth.js";
 
 const app = express();
@@ -79,7 +79,7 @@ app.get("/health", (req, res) => {
 }); 
 
 // Protected routes (replaces withAuth wrapper)
-app.use("/users", authenticate, userRoutes);
+app.use("/users", authenticate, userRouter);
 
 // Auth routes (no authentication required) 
 app.use("/", authRouter);
