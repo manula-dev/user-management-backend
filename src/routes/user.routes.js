@@ -1,3 +1,4 @@
+/*
 import {
   handleCreateUser,
   handleDeleteUser,
@@ -53,4 +54,37 @@ export function handleUserByIdRoute(req, res) {
 
   res.writeHead(405, { "Content-Type": "application/json" });
   res.end(JSON.stringify({ error: "Method Not Allowed" }));
-}
+} */
+
+import express from "express";
+
+import {
+  handleCreateUser,
+  handleDeleteUser,
+  handleGetMe,
+  handleGetUserById,
+  handleGetUsers,
+  handleUpdateUser,
+} from "../controllers/user.controller.js"; 
+
+export const userRouter = express.Router();
+
+// Get / users 
+userRouter.get("/", handleGetUsers);
+
+//post /users 
+userRouter.post("/", handleCreateUser);
+
+//Get / users/me 
+userRouter.get("/me", handleGetMe);
+
+// Get / users/ :id 
+userRouter.get("/:id", handleGetUserById);
+
+// Put /users/:id 
+userRouter.put("/:id", handleUpdateUser);
+
+// DELETE /users/:id 
+userRouter.delete("/:id", handleDeleteUser);
+
+
