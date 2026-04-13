@@ -21,8 +21,8 @@ export function handleLogin(req, res) {
     }
   });
 } */
-
- import { authService } from "../services/auth.service.js";
+/*
+import { authService } from "../services/auth.service.js";
 import { signupSchema, loginSchema } from "../schemas/auth.schemas.js";
 
 function getValidationMessage(error) {
@@ -136,7 +136,147 @@ export function handleSignup(req, res) {
       return res.end(JSON.stringify({ error: "Internal server error" }));
     }
   });
+} */
+import { authService } from "../services/auth.service.js";
+import { signupSchema, loginSchema } from "../schemas/auth.schemas.js";
+
+function getValidationMessage(error) {
+  return error?.issues?.[0]?.message || "Invalid request body";
 }
+/*
+// ✅ LOGIN
+export function handleLogin(req, res) {
+  try {
+    const result = loginSchema.parse(req.body);
+
+    if (!result.success) {
+      return res.status(400).json({ 
+        error: getValidationMessage(result.error),
+      });
+    }
+
+    const loginResult = authService.login(result.data.email, result.data.password);
+    
+    res.status(200).json(loginResult);
+  } catch (err) {
+    console.error("Login error:", err);
+    
+    if (err?.message === "Invalid credentials") {
+      return res.status(401).json({ error: err.message });
+    }
+    
+    res.status(500).json({ error: "Internal server error" });
+  }
+} */
+export async function handleLogin(req, res) {
+  try {
+    const result = loginSchema.safeParse(req.body);
+
+    if (!result.success) {
+      return res.status(400).json({
+        error: getValidationMessage(result.error),
+      });
+    }
+
+    const loginResult = await authService.login(
+      result.data.email,
+      result.data.password
+    );
+
+    return res.status(200).json(loginResult);
+
+  } catch (err) {
+    console.error("Login error:", err);
+
+    if (err?.message === "Invalid credentials") {
+      return res.status(401).json({ error: err.message });
+    }
+
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+/*
+// ✅ SIGNUP 
+export async function handleSignup(req, res) {
+  try {
+    const result = signupSchema.parse(req.body);
+
+    if (!result.success) {
+      return res.status(400).json({
+        error: getValidationMessage(result.error),
+      });
+    }
+    
+    const user = await authService.signup(result.data);
+
+    res.status(201).json(user);
+  } catch (err) {
+    if (err?.code === "P2002") {
+      return res.status(409).json({ error: "Email already exists" }); 
+    }  
+
+    console.error("Signup error:", err);
+
+    res.status(500).json({ error: "Internal server error" });
+  }
+} */ 
+
+export async function handleSignup(req, res) {
+  try {
+    const result = signupSchema.safeParse(req.body);
+
+    if (!result.success) {
+      return res.status(400).json({
+        error: getValidationMessage(result.error),
+      });
+    }
+
+    const user = await authService.signup(result.data);
+
+    return res.status(201).json(user);
+
+  } catch (err) {
+    if (err?.code === "P2002") {
+      return res.status(409).json({ error: "Email already exists" });
+    }
+
+    console.error("Signup error:", err);
+
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
 
 
 

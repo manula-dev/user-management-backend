@@ -59,32 +59,32 @@ export function handleUserByIdRoute(req, res) {
 import express from "express";
 
 import {
-  handleCreateUser,
-  handleDeleteUser,
-  handleGetMe,
-  handleGetUserById,
-  handleGetUsers,
-  handleUpdateUser,
+  createUser,
+  deleteUser,
+  getMe,
+  getUserById,
+  getUsers,
+  updateUser,
 } from "../controllers/user.controller.js"; 
 
 export const userRouter = express.Router();
 
 // Get / users 
-userRouter.get("/", handleGetUsers);
+userRouter.get("/", getUsers);
 
 //post /users 
-userRouter.post("/", handleCreateUser);
+userRouter.post("/", createUser);
 
 //Get / users/me 
-userRouter.get("/me", handleGetMe);
+userRouter.get("/me", getMe);
 
 // Get / users/ :id 
-userRouter.get("/:id", handleGetUserById);
+userRouter.get("/:id", getUserById);
 
 // Put /users/:id 
-userRouter.put("/:id", handleUpdateUser);
+userRouter.put("/:id", updateUser);
 
 // DELETE /users/:id 
-userRouter.delete("/:id", handleDeleteUser);
+userRouter.delete("/:id", deleteUser);
 
 
