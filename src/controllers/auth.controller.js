@@ -196,32 +196,6 @@ export async function handleLogin(req, res) {
   }
 }
 
-/*
-// ✅ SIGNUP 
-export async function handleSignup(req, res) {
-  try {
-    const result = signupSchema.parse(req.body);
-
-    if (!result.success) {
-      return res.status(400).json({
-        error: getValidationMessage(result.error),
-      });
-    }
-    
-    const user = await authService.signup(result.data);
-
-    res.status(201).json(user);
-  } catch (err) {
-    if (err?.code === "P2002") {
-      return res.status(409).json({ error: "Email already exists" }); 
-    }  
-
-    console.error("Signup error:", err);
-
-    res.status(500).json({ error: "Internal server error" });
-  }
-} */ 
-
 export async function handleSignup(req, res) {
   try {
     const result = signupSchema.safeParse(req.body);
