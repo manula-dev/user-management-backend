@@ -21,6 +21,7 @@ model User {
   email String @unique
   password String? //make optional Temporarily 
   role          Role     @default(user) // ✅ strong typing
+  image    String? 
   emailVerified Boolean  @default(false)
   refreshToken  String?
   resetToken    String?

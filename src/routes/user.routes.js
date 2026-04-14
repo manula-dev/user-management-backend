@@ -57,6 +57,8 @@ export function handleUserByIdRoute(req, res) {
 } */
 
 import express from "express";
+import { upload } from "../middleware/upload.js";
+import { uploadUserImage } from "../controllers/user.controller.js";
 
 import {
   createUser,
@@ -68,6 +70,13 @@ import {
 } from "../controllers/user.controller.js"; 
 
 export const userRouter = express.Router();
+
+userRouter.post(
+  "/upload-image",
+  upload.single("image"),
+  uploadUserImage
+); 
+
 
 // Get / users 
 userRouter.get("/", getUsers);

@@ -54,15 +54,14 @@ export function createServer() {
   return server;
 }
  */
-
-
 import express from "express";
+import path from "path";
 import { authRouter} from "./routes/auth.routes.js";
 import { userRouter } from "./routes/user.routes.js";
 import { authenticate } from "./middleware/auth.js";
 
 const app = express();
-
+app.use("/uploads", express.static(path.join(process.cwd(), "src", "uploads")));
 app.use(express.json());
 
 //public routes

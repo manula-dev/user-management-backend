@@ -139,6 +139,35 @@ try {
 import { userService } from "../services/user.service.js";
 import { createUserSchema, updateUserSchema } from "../validators/user.validator.js";
 
+
+export async function uploadUserImage(req, res) {
+  try {
+    const userId = req.user.userId;
+
+    if (!req.file) {
+      return res.status(400).json({
+        error: "No image uploaded. Send the file in form-data with the key 'image'.",
+      });
+    }
+
+    const imagePath = req.file.filename;
+
+    const user = await userService.updateUser(userId, {
+      image: imagePath,
+    });
+
+    res.json({
+      message: "Image uploaded successfully",
+      image: imagePath,
+      user,
+    }); 
+  } catch (err) {
+    res.status(500).json({ error: "Image upload failed",
+    });
+  }
+}    
+
+
 // Get /users 
 export async function getUsers(req, res) {
   try {
