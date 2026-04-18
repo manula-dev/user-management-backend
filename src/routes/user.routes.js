@@ -57,10 +57,7 @@ export function handleUserByIdRoute(req, res) {
 } */
 
 import express from "express";
-import { upload } from "../middleware/upload.js";
-import { uploadUserImage } from "../controllers/user.controller.js";
-
-import {
+import { upload } from "../middleware/upload.js";import {
   createUser,
   deleteUser,
   getMe,
@@ -70,13 +67,6 @@ import {
 } from "../controllers/user.controller.js"; 
 
 export const userRouter = express.Router();
-
-userRouter.post(
-  "/upload-image",
-  upload.single("image"),
-  uploadUserImage
-); 
-
 
 // Get / users 
 userRouter.get("/", getUsers);
@@ -91,8 +81,11 @@ userRouter.get("/me", getMe);
 userRouter.get("/:id", getUserById);
 
 // Put /users/:id 
-userRouter.put("/:id", updateUser);
-
+userRouter.put(
+  "/update",
+  upload.single("image"),
+  updateUser
+);
 // DELETE /users/:id 
 userRouter.delete("/:id", deleteUser);
 

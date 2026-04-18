@@ -56,16 +56,21 @@ export function createServer() {
  */
 import express from "express";
 import path from "path";
+import cors from "cors";
 import { authRouter} from "./routes/auth.routes.js";
 import { userRouter } from "./routes/user.routes.js";
 import { authenticate } from "./middleware/auth.js";
-import cors from "cors";
 
-app.use(cors());
 
 const app = express();
-app.use("/uploads", express.static(path.join(process.cwd(), "src", "uploads")));
+
+
+// ✅ MUST BE HERE (VERY IMPORTANT)
+app.use(cors());
 app.use(express.json());
+
+
+app.use("/uploads", express.static(path.join(process.cwd(), "src", "uploads")));
 
 //public routes
 app.get("/", (req, res) => {  

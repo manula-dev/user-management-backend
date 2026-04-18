@@ -139,35 +139,6 @@ try {
 import { userService } from "../services/user.service.js";
 import { createUserSchema, updateUserSchema } from "../validators/user.validator.js";
 
-
-export async function uploadUserImage(req, res) {
-  try {
-    const userId = req.user.userId;
-
-    if (!req.file) {
-      return res.status(400).json({
-        error: "No image uploaded. Send the file in form-data with the key 'image'.",
-      });
-    }
-
-    const imagePath = req.file.filename;
-
-    const user = await userService.updateUser(userId, {
-      image: imagePath,
-    });
-
-    res.json({
-      message: "Image uploaded successfully",
-      image: imagePath,
-      user,
-    }); 
-  } catch (err) {
-    res.status(500).json({ error: "Image upload failed",
-    });
-  }
-}    
-
-
 // Get /users 
 export async function getUsers(req, res) {
   try {
@@ -210,24 +181,33 @@ export async function createUser(req, res) {
   }  
 }
 
-// PUT /user/:id
+
+// PUT /users/update
 export async function updateUser(req, res) {
-  const { id } = req.params;
-
-  const { error, value } = updateUserSchema.validate(req.body);
-
-  if (error) {
-    return res.status(400).json({ error: error.details[0].message });
-  }
-  
   try {
-    const updatedUser = await userService.updateUser(id, value);
-    res.status(200).json(updatedUser);
-  } catch (err) {
-    if (err.message === "User not found") {
-      return res.status(404).json({ error: "User not found" });
+    const userId = req.user.userId;
+
+    const { name, email } = req.body;
+
+    const data = {
+      ...(name && { name }),
+      ...(email && { email }),
+    };
+
+    // image upload (multer)
+    if (req.file) {
+      data.image = req.file.filename;
     }
-    
+
+    const updatedUser = await userService.updateUser(userId, data);
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+
+  } catch (err) {
+    console.error("Update user error:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
