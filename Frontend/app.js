@@ -34,6 +34,11 @@ async function register() {
     });
 
     const data = await res.json();
+    if (res.ok) {
+    alert("Registration successful!");
+    } else {
+    alert(data.message || "Registration failed");
+    }
 
     spinner.classList.remove("active");
 
@@ -50,83 +55,51 @@ async function register() {
     console.error(err); // IMPORTANT
   }
 }
-/*
-async function login() {
-
-const spinner = document.getElementById("spinner");
-spinner.classList.add("active");
-
-// after request finished
-
-  const errorE1 = document.getElementById('error');
-  errorE1.textContent = ""; // Clear previous error messages  
 
 
-  try {
-    const res = await fetch(`${API}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value,
-      })
-    });  
-      
-      const data = await res.json();
-      spinner.classList.remove("active");  
-  
-      if (!res.ok) {
-        errorE1.innerText = data.error || "Login failed";  
-        return;
-      }
-  
-      localStorage.setItem("token", data.token);
-      window.location.href = 'dashboard.html';
-  
-  } catch (err) {
-    spinner.classList.remove("active");
-    errorE1.innerText = "Server error. Please try again later."; 
-    console.error(err); // IMPORTANT 
-  } 
-} */
+
+
 async function login() {
   const spinner = document.getElementById("spinner");
-  const errorEl = document.getElementById('error');
+  const errorEl = document.getElementById("error");
+  const btn = document.getElementById("loginBtn");
 
-  errorEl.textContent = "";
-  spinner.classList.add("active");
+  if (errorEl) errorEl.textContent = "";
+  if (spinner) spinner.classList.add("active");
+  if (btn) btn.disabled = true;
 
   try {
     const res = await fetch(`${API}/login`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value,
+        email: document.getElementById("email")?.value,
+        password: document.getElementById("password")?.value
       })
     });
 
     const data = await res.json();
 
-    spinner.classList.remove("active");
+    if (spinner) spinner.classList.remove("active");
+    if (btn) btn.disabled = false;
 
     if (!res.ok) {
-      errorEl.innerText = data.error || "Login failed";
+      if (errorEl) errorEl.innerText = data.error || "Login failed";
       return;
     }
 
     localStorage.setItem("token", data.token);
-    window.location.href = 'dashboard.html';
+    window.location.href = "dashboard.html";
 
   } catch (err) {
-    spinner.classList.remove("active");
-    errorEl.innerText = "Server error";
+    if (spinner) spinner.classList.remove("active");
+    if (btn) btn.disabled = false;
+    if (errorEl) errorEl.innerText = "Server error";
+    console.error(err);
   }
 }
+
+
 
 function toggleDark() {
   document.body.classList.toggle("dark");

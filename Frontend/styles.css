@@ -1,0 +1,153 @@
+
+/* ================= GLOBAL ================= */
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+  margin: 0;
+  min-height: 100vh;
+}
+/* ================= AUTH ================= */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  max-width: 1200px; /* උපරිම පළල */
+  margin: 20px auto; /* මැදට ගැනීමට */
+  padding: 0 20px;   /* දෙපැත්තෙන් සුළු ඉඩක් */
+}
+
+.auth-card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-card h2 {
+  margin-bottom: 20px;
+}
+
+input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  transition: border 0.3s
+}
+
+.auth-card .btn {
+  width: 100%;
+  margin-top: 10px;
+}
+
+
+
+/* ================= NAVBAR ================= */
+ .navbar {
+  
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #4CAF50;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box; 
+}
+
+.navbar div {
+  display: flex;
+  gap: 10px; /* බොත්තම් දෙක අතර ඉඩ තැබීමට */
+  align-items: center;
+}
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 25px;
+  align-items: start;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.edit-form {
+  max-width: 500px;
+}
+
+.btn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: #4CAF50;
+  color: white;
+}
+
+.spinner {
+  display: none;
+  margin-bottom: 10px;
+}
+
+.spinner.active {
+  display: block;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+
+
+
+
+
+/* ================= DARK MODE ================= */
+.dark {
+  background: #121212;
+  color: white;
+}
+
+.dark .container,
+.dark #userInfo {
+  background: #1e1e1e;
+  color: white;
+}
+
+.dark input {
+  background: #2a2a2a;
+  color: white;
+  border: 1px solid #555;
+}
+
+/* ================= LINKS ================= */
+.link {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.link a {
+  color: #4CAF50;
+  text-decoration: none;
+}
