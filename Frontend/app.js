@@ -1,4 +1,4 @@
-const API = "http://localhost:3000";
+const API = "";
 
 // protect dashboard
 if (window.location.pathname.includes("dashboard.html")) {
