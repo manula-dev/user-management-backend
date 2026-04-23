@@ -1,44 +1,56 @@
-/*import "dotenv/config";
-import { createServer} from "./app.js";
-
-const server = createServer();
-const PORT = process.env.PORT || 3000;
-
-server.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    console.log("Server started successfully!");
-});
-  // Server startup logic here
-    //console.log("Server started successfully!");
-
-  // Additional server setup or middleware can go here */
- /* 
-  process.on("unhandledRejection", err => {
-  console.error("UNHANDLED REJECTION:", err);
-});
-
-process.on("uncaughtException", err => {
-  console.error("UNCAUGHT EXCEPTION:", err);
-});
-import "dotenv/config";
-import { createServer } from "./app.js";
-
-const server = createServer();
- 
-
- 
-const PORT = process.env.PORT || 4000;
-
-server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log("Server started successfully!");
-});
-*/
-
 import app from "./app.js";
-const PORT = process.env.PORT || 3000;
+import { env } from "./config/env.js";
+import { prisma } from "./db/prisma.js";
 
-app.listen(PORT, () => {
-  console.log("Server is running on http://localhost:3000");
+let server;
 
+async function shutdown(signal) {
+  console.log(`${signal} received, shutting down gracefully...`);
+
+  if (server) {
+    server.close(async () => {
+      await prisma.$disconnect().catch((error) => {
+        console.error("Error disconnecting Prisma:", error);
+      });
+      process.exit(0);
+    });
+
+    setTimeout(() => {
+      process.exit(1);
+    }, 10000).unref();
+    return;
+  }
+
+  await prisma.$disconnect().catch(() => {});
+  process.exit(0);
+}
+
+process.on("SIGINT", () => {
+  void shutdown("SIGINT");
+});
+
+process.on("SIGTERM", () => {
+  void shutdown("SIGTERM");
+});
+
+process.on("unhandledRejection", (error) => {
+  console.error("Unhandled promise rejection:", error);
+});
+
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught exception:", error);
+  process.exit(1);
+});
+
+async function start() {
+  await prisma.$connect();
+
+  server = app.listen(env.PORT, () => {
+    console.log(`Server listening on port ${env.PORT}`);
+  });
+}
+
+start().catch((error) => {
+  console.error("Failed to start server:", error);
+  process.exit(1);
 });

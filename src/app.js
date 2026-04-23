@@ -1,100 +1,52 @@
-
-/*
-import http from "http";
-import { handleUserByIdRoute, userRoutes } from "./routes/user.routes.js";
-import { authRoutes } from "./routes/auth.routes.js";
-import { authenticate } from "./middleware/auth.js";
-
-function withAuth(handler) {
-  return (req, res) => authenticate(req, res, () => handler(req, res));
-}
-export function createServer() {
-  // Wrap user routes with authentication
-  const protectedUserRoutes = {};
-  for (const path in userRoutes) {
-    protectedUserRoutes[path] = withAuth(userRoutes[path]);
-  }
-
-  const routes = {
-    "/": (req, res) => {
-      res.writeHead(200, { "content-type": "text/plain" });
-      res.end("Welcome to the Home Page");
-    },
-    "/health": (req, res) => {
-      res.writeHead(200, { "content-type": "text/plain" });
-      res.end("ok");
-    },
-    "/about": (req, res) => {
-      res.writeHead(200, { "Content-Type": "text/plain" });
-      res.end("About Page");
-    },
-    ...protectedUserRoutes,
-    ...authRoutes,
-  };
-
-  const server = http.createServer((req, res) => {
-    const rawPath = req.url.split("?")[0];
-    const path = rawPath !== "/" ? rawPath.replace(/\/+$/, "") : rawPath;
-
-    const handler = routes[path];
-
-    if (handler) {
-      handler(req, res);
-      return;
-    }
-
-    if (path.startsWith("/users/") && path.split("/").length === 3) {
-      return withAuth(handleUserByIdRoute)(req, res);
-    }
-
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ error: "Not Found" }));
-  });
-
-  return server;
-}
- */
 import express from "express";
 import path from "path";
 import cors from "cors";
-import { authRouter} from "./routes/auth.routes.js";
+import { authRouter } from "./routes/auth.routes.js";
 import { userRouter } from "./routes/user.routes.js";
 import { authenticate } from "./middleware/auth.js";
-
+import { env } from "./config/env.js";
 
 const app = express();
+const uploadPath = path.join(process.cwd(), "src", "uploads");
+const corsOrigins = env.CORS_ORIGIN
+  ? env.CORS_ORIGIN.split(",").map((origin) => origin.trim()).filter(Boolean)
+  : undefined;
 
-
-// ✅ MUST BE HERE (VERY IMPORTANT)
-app.use(cors());
+app.disable("x-powered-by");
+app.use(cors(corsOrigins?.length ? { origin: corsOrigins } : undefined));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+app.use("/uploads", express.static(uploadPath));
 
-app.use("/uploads", express.static(path.join(process.cwd(), "src", "uploads")));
-
-//public routes
-app.get("/", (req, res) => {  
-  res.send("Welcome to the Home Page");
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "User management backend is running" });
 });
 
 app.get("/about", (req, res) => {
- res.send("This is the About Page");
+  res.status(200).json({ message: "User management backend" });
 });
 
 app.get("/health", (req, res) => {
- res.send("ok");     
-}); 
+  res.status(200).json({ status: "ok" });
+});
 
-// Protected routes (replaces withAuth wrapper)
 app.use("/users", authenticate, userRouter);
-
-// Auth routes (no authentication required) 
 app.use("/", authRouter);
+app.use("/auth", authRouter);
 
-// 404 handler 
 app.use((req, res) => {
   res.status(404).json({ error: "Not Found" });
 });
 
-export default app;
+app.use((err, req, res, next) => {
+  console.error(err);
 
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  return res.status(500).json({ error: "Internal Server Error" });
+});
+
+export default app;

@@ -1,17 +1,29 @@
-import { userRepository } from "../repositories/user.repository.js";
 import bcrypt from "bcryptjs";
+import { userRepository } from "../repositories/user.repository.js";
+
+function parseUserId(id) {
+  const parsedId = Number.parseInt(String(id), 10);
+
+  if (!Number.isInteger(parsedId) || parsedId <= 0) {
+    throw new Error("Invalid user id");
+  }
+
+  return parsedId;
+}
 
 export const userService = {
   getUsers: () => userRepository.findAll(),
-  getUserById: (id) => userRepository.findById(id),
-  createUser: async (userData) => {
+
+  getUserById: (id) => userRepository.findById(parseUserId(id)),
+
+  async createUser(userData) {
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     return userRepository.create({ ...userData, password: hashedPassword });
   },
 
-  async updateUser(id, data) 
-  {
-    const existingUser = await userRepository.findById(id);
+  async updateUser(id, data) {
+    const userId = parseUserId(id);
+    const existingUser = await userRepository.findById(userId);
 
     if (!existingUser) {
       throw new Error("User not found");
@@ -21,17 +33,17 @@ export const userService = {
       data.password = await bcrypt.hash(data.password, 10);
     }
 
-    return userRepository.update(id, data);
+    return userRepository.update(userId, data);
   },
 
   async deleteUser(id) {
-    const existingUser = await userRepository.findById(id);
+    const userId = parseUserId(id);
+    const existingUser = await userRepository.findById(userId);
 
     if (!existingUser) {
       throw new Error("User not found");
     }
 
-    return userRepository.delete(id);
+    return userRepository.delete(userId);
   },
 };
-

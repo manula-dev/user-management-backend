@@ -1,79 +1,23 @@
-
-/*
-export const userRepository = {
-  findAll: () => prisma.user.findMany({
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-    },
-  }),
-  findById: (id) =>  prisma.user.findUnique({
-      where: { id },
-        select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-  }  }),
-  findByEmail: (email) => prisma.user.findUnique({
-    where: { email },
-  }),
-  create: (user) => {
-    return prisma.user.create({
-      data: user,
-          select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-    },
-    });
-  },
-  delete: (id) => {
-    return prisma.user.delete({
-      where: { id },
-    });
-  },
-  update: (id, data) => {
-    return prisma.user.update({
-      where: { id },
-      data,
-          select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-    },
-    });
-  },
-}; */ 
-
 import { prisma } from "../db/prisma.js";
+
+const publicUserSelect = {
+  id: true,
+  name: true,
+  email: true,
+  role: true,
+  image: true,
+};
 
 export const userRepository = {
   findAll: () =>
     prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        image: true,   // 👈 added
-      },
+      select: publicUserSelect,
     }),
 
   findById: (id) =>
     prisma.user.findUnique({
       where: { id },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        image: true,   // 👈 added
-      },
+      select: publicUserSelect,
     }),
 
   findByEmail: (email) =>
@@ -81,36 +25,21 @@ export const userRepository = {
       where: { email },
     }),
 
-  create: (user) => {
-    return prisma.user.create({
+  create: (user) =>
+    prisma.user.create({
       data: user,
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        image: true,   // 👈 added
-      },
-    });
-  },
+      select: publicUserSelect,
+    }),
 
-  delete: (id) => {
-    return prisma.user.delete({
+  delete: (id) =>
+    prisma.user.delete({
       where: { id },
-    });
-  },
+    }),
 
-  update: (id, data) => {
-    return prisma.user.update({
+  update: (id, data) =>
+    prisma.user.update({
       where: { id },
       data,
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        image: true,   // 👈 added
-      },
-    });
-  },
+      select: publicUserSelect,
+    }),
 };
