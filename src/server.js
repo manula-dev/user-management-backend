@@ -9,7 +9,7 @@ async function shutdown(signal) {
 
   if (server) {
     server.close(async () => {
-      await prisma.$disconnect().catch((error) => {
+      await prisma().$disconnect().catch((error) => {
         console.error("Error disconnecting Prisma:", error);
       });
       process.exit(0);
@@ -21,7 +21,7 @@ async function shutdown(signal) {
     return;
   }
 
-  await prisma.$disconnect().catch(() => {});
+  await prisma().$disconnect().catch(() => {});
   process.exit(0);
 }
 
@@ -43,7 +43,7 @@ process.on("uncaughtException", (error) => {
 });
 
 async function start() {
-  await prisma.$connect();
+  await prisma().$connect();
 
   server = app.listen(env.PORT, () => {
     console.log(`Server listening on port ${env.PORT}`);

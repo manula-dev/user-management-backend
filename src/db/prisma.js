@@ -3,8 +3,17 @@ import pkg from "@prisma/client";
 
 const { PrismaClient } = pkg;
 
-export const prisma = new PrismaClient({
-  adapter: new PrismaMariaDb({
-    url: process.env.DATABASE_URL,
-  }),
-});
+let _prisma;
+
+function getPrisma() {
+  if (!_prisma) {
+    _prisma = new PrismaClient({
+      adapter: new PrismaMariaDb({
+        url: process.env.DATABASE_URL,
+      }),
+    });
+  }
+  return _prisma;
+}
+
+export { getPrisma as prisma };
