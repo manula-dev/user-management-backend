@@ -27,3 +27,9 @@ export const env = {
   ADMIN_SECRET: readEnv("ADMIN_SECRET"),
   CORS_ORIGIN: readEnv("CORS_ORIGIN"),
 };
+console.log("ENV CHECK:", {
+  PORT: process.env.PORT,
+  JWT_SECRET: process.env.JWT_SECRET,
+  DATABASE_URL: process.env.DATABASE_URL,
+  ADMIN_SECRET: process.env.ADMIN_SECRET,
+});
