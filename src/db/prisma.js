@@ -1,9 +1,19 @@
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import pkg from "@prisma/client";
-import { env } from "../config/env.js";
 
 const { PrismaClient } = pkg;
 
-const adapter = new PrismaMariaDb(env.DATABASE_URL);
+let _prisma;
 
-export const prisma = new PrismaClient({ adapter });
+function getPrisma() {
+  if (!_prisma) {
+    _prisma = new PrismaClient({
+      adapter: new PrismaMariaDb({
+        url: process.env.DATABASE_URL,
+      }),
+    });
+  }
+  return _prisma;
+}
+
+export { getPrisma as prisma };
