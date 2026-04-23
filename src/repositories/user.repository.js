@@ -10,34 +10,34 @@ const publicUserSelect = {
 
 export const userRepository = {
   findAll: () =>
-    prisma.user.findMany({
+    prisma().user.findMany({
       select: publicUserSelect,
     }),
 
   findById: (id) =>
-    prisma.user.findUnique({
+    prisma().user.findUnique({
       where: { id },
       select: publicUserSelect,
     }),
 
   findByEmail: (email) =>
-    prisma.user.findUnique({
+    prisma().user.findUnique({
       where: { email },
     }),
 
   create: (user) =>
-    prisma.user.create({
+    prisma().user.create({
       data: user,
       select: publicUserSelect,
     }),
 
   delete: (id) =>
-    prisma.user.delete({
+    prisma().user.delete({
       where: { id },
     }),
 
   update: (id, data) =>
-    prisma.user.update({
+    prisma().user.update({
       where: { id },
       data,
       select: publicUserSelect,
