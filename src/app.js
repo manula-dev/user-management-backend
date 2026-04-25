@@ -5,6 +5,7 @@ import { authRouter } from "./routes/auth.routes.js";
 import { userRouter } from "./routes/user.routes.js";
 import { authenticate } from "./middleware/auth.js";
 import { env } from "./config/env.js";
+import { prisma } from "./db/prisma.js";
 
 const app = express();
 const uploadPath = path.join(process.cwd(), "src", "uploads");
@@ -27,8 +28,14 @@ app.get("/about", (req, res) => {
   res.status(200).json({ message: "User management backend" });
 });
 
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
+app.get("/health", async (req, res) => {
+  try {
+    await prisma().$queryRawUnsafe("SELECT 1");
+    return res.status(200).json({ status: "ok" });
+  } catch (error) {
+    console.error("Health check failed:", error);
+    return res.status(503).json({ status: "error" });
+  }
 });
 
 app.use("/users", authenticate, userRouter);

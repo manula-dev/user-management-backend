@@ -44,6 +44,7 @@ process.on("uncaughtException", (error) => {
 
 async function start() {
   await prisma().$connect();
+  await prisma().$queryRawUnsafe("SELECT 1");
 
   server = app.listen(env.PORT, () => {
     console.log(`Server listening on port ${env.PORT}`);
